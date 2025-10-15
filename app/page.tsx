@@ -1,6 +1,7 @@
 import Home from "../comps/Home";
 
 import { client } from "../lib/client";
+import { productsWithCurrency } from "../lib/currency";
 
 export interface ProductsTypes {
   _createdAt: string;
@@ -16,6 +17,8 @@ export interface ProductsTypes {
   oldPrice: number;
   slug: { _type: string; current: string };
   quantity: number;
+  currencySymbol: string,
+  currency: string,
 }
 
 export interface BannerDataTypes {
@@ -49,9 +52,12 @@ async function getData() {
 
 export default async function Page() {
   const { products, bannerData } = await getData();
+
+  const productsConverted = await productsWithCurrency(products);
+
   return (
     <>
-      <Home products={products} bannerData={bannerData} />
+      <Home products={productsConverted} bannerData={bannerData} />
     </>
   );
 }

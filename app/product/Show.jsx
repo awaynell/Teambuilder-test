@@ -8,7 +8,7 @@ import { Minus, Plus, Star } from "../../comps/Svg";
 
 const Show = ({ product, products }) => {
   console.log("show");
-  const { incQty, decQty, qty, onAdd } = useContext(UC);
+  const { incQty, decQty, qty, onAdd, setshowCart } = useContext(UC);
   // USE STATES
   const [photoIndex, setphotoIndex] = useState(0);
 
@@ -30,6 +30,11 @@ const Show = ({ product, products }) => {
     img.style.transformOrigin = ` center`;
 
     setZoom(false);
+  };
+
+  const onBuyNow = () => {
+    onAdd(product, qty);
+    setshowCart(true);
   };
 
   return (
@@ -101,7 +106,7 @@ const Show = ({ product, products }) => {
               <div className=" text-secondary font-medium ">DETAILS:</div>
               <p className="w-2/3 text-lightGray"> {product.details}</p>
 
-              <div className=" my-4 text-2xl font-bold"> ${product.price} </div>
+              <div className=" my-4 text-2xl font-bold"> {product.currencySymbol}{product.price} </div>
 
               {/* ==== QUANTITY SHOW  */}
               <div className="flex">
@@ -146,7 +151,8 @@ const Show = ({ product, products }) => {
 
               <div
                 className=" text-center hover:scale-105 transition shadow-md cursor-pointer
-                 bg-primary text-xl px-8 py-2  text-highLight ring-1 ring-primary"
+                 bg-primary text-xl px-8 py-2  text-white ring-1 ring-primary"
+                 onClick={onBuyNow}
               >
                 Buy Now
               </div>

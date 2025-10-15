@@ -1,4 +1,5 @@
 import { client } from "../../../lib/client";
+import { productWithCurrency, productsWithCurrency } from "../../../lib/currency";
 import Show from "../Show.jsx";
 
 type PageProps = {
@@ -15,10 +16,14 @@ async function getProduct(slug) {
   // GET SINGLE PRODUCT
   const product = await client.fetch(oneProduct);
 
+  const productConverted = await productWithCurrency(product);
+
   // GET RELATED PRODUCTS
   const products = await client.fetch(productsQuery);
 
-  return { product, products };
+  const productsConverted = await productsWithCurrency(products);
+
+  return { product: productConverted, products: productsConverted };
 }
 
 export default async function SingleProduct({ params: { slug } }: PageProps) {

@@ -3,6 +3,9 @@ import React, { createContext, useState } from "react";
 import toast from "react-hot-toast";
 import { Toaster } from "react-hot-toast";
 import { ProductsTypes } from "./page";
+import { parsePrice } from "../lib/utils";
+
+export type SortBy = 'default' | 'low-to-high' | 'high-to-low';
 
 export const UC = createContext<any>(null);
 
@@ -12,6 +15,7 @@ export const Provider = ({ children }) => {
   const [totalPrice, settotalPrice] = useState<number>(0);
   const [totalQuantities, settotalQuantities] = useState<number>(0);
   const [qty, setqty] = useState<number>(1);
+  const [sortBy, setSortBy] = useState<SortBy>('default');
 
   // INC QTY FUNC
   const incQty = () => setqty((p) => p + 1);
@@ -30,7 +34,8 @@ export const Provider = ({ children }) => {
       (item) => item._id === product._id
     );
 
-    settotalPrice((p) => p + product.price * quantity);
+
+    settotalPrice((p) => p + parsePrice(product.price) * quantity);
     settotalQuantities((p) => p + quantity);
 
     if (checkProductInCart) {
@@ -54,7 +59,7 @@ export const Provider = ({ children }) => {
     const foundProduct = cartItems.find((item) => product._id === item._id);
     const newCartItems = cartItems.filter((item) => item._id !== product._id);
 
-    settotalPrice((p) => p - foundProduct.quantity * foundProduct.price);
+    settotalPrice((p) => p - foundProduct.quantity * parsePrice(foundProduct.price));
     settotalQuantities((p) => p - foundProduct.quantity);
     setcartItems(newCartItems);
   };
@@ -73,7 +78,7 @@ export const Provider = ({ children }) => {
         quantity: foundProduct.quantity + 1,
       });
 
-      settotalPrice((p) => p + foundProduct.price);
+      settotalPrice((p) => p + parsePrice(foundProduct.price));
       settotalQuantities((p) => p + 1);
     } else if (value === "dec") {
       if (foundProduct.quantity > 1) {
@@ -81,7 +86,7 @@ export const Provider = ({ children }) => {
           ...foundProduct,
           quantity: foundProduct.quantity - 1,
         });
-        settotalPrice((p) => p - foundProduct.price);
+        settotalPrice((p) => p - parsePrice(foundProduct.price));
         settotalQuantities((p) => p - 1);
       }
     }
@@ -105,6 +110,8 @@ export const Provider = ({ children }) => {
         onAdd,
         toggleCartItemQuantity,
         onRemove,
+        sortBy,
+        setSortBy,
       }}
     >
       <Toaster />

@@ -6,6 +6,7 @@ import getStripe from "../lib/getStripe";
 import { urlFor } from "../lib/client";
 import { UC } from "../app/context";
 import { ArrowLeft, Delete, Minus, Plus, ShoppingBag } from "./Svg";
+import { formatPrice } from "../lib/currency";
 
 const Cart = () => {
   // USE REF
@@ -20,6 +21,7 @@ const Cart = () => {
     toggleCartItemQuantity,
     onRemove,
   } = useContext(UC);
+
 
   const checkOut = async () => {
     const stripe = await getStripe();
@@ -103,7 +105,7 @@ const Cart = () => {
                       {item?.name}
                     </h4>
                     <h5 className=" text-xl text-secondary font-bold">
-                      ${item?.price}
+                      {item.currencySymbol}{item?.price}
                     </h5>
                   </section>
 
@@ -153,7 +155,7 @@ const Cart = () => {
             <div className="flex flex-col items-center my-10 w-full">
               <section className=" w-full px-10 flex items-center justify-between">
                 <h2 className=" text-2xl font-semibold">Subtotal:</h2>
-                <span className=" text-xl font-bold"> ${totalPrice}</span>
+                <span className=" text-xl font-bold"> {cartItems[0].currencySymbol}{formatPrice(totalPrice, cartItems[0].currency)}</span>
               </section>
 
               <button

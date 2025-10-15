@@ -3,11 +3,12 @@ import { client } from "../lib/client";
 import Img from "next/image";
 import { useNextSanityImage } from "next-sanity-image";
 import { ProductsTypes } from "./page";
+import { ProductWithCurrency } from "../lib/currency";
 import { memo, useContext, useEffect, useState } from "react";
 import { UC } from "./context";
 
 interface ProductsProps {
-  products: ProductsTypes;
+  products: ProductWithCurrency;
   gap?: string;
 }
 
@@ -23,15 +24,15 @@ const Products = ({ products, gap }: ProductsProps) => {
   useEffect(() => {
     setIsloaded(true);
   }, []);
-  const saveToLocalS = (product: ProductsTypes) => {
+  const saveToLocalS = (product: ProductsTypes | ProductWithCurrency) => {
     if (localStorage.trxfav) {
       if (
         JSON.parse(localStorage.trxfav).filter(
-          (each: ProductsTypes) => each._id == product._id
+          (each: ProductsTypes | ProductWithCurrency) => each._id == product._id
         ).length >= 1
       ) {
         const filterd = JSON.parse(localStorage.trxfav).filter(
-          (each: ProductsTypes) => each._id != product._id
+          (each: ProductsTypes | ProductWithCurrency) => each._id != product._id
         );
         localStorage.setItem("trxfav", JSON.stringify(filterd));
       } else {
@@ -48,7 +49,7 @@ const Products = ({ products, gap }: ProductsProps) => {
   return (
     <div
       className={` ${gap} grid justify-center hover:scale-105
-     transition my-5 `}
+     transition my-5 `} dir="ltr"
     >
       <div
         className=" relative cursor-pointer shadow-sm shadow-lightDim overflow-hidden
@@ -65,12 +66,12 @@ const Products = ({ products, gap }: ProductsProps) => {
       {/* === NAME & PRICE */}
       <section className=" mx-1 sm:mx-2 flex mt-2 items-center justify-between">
         <nav className=" text-sm font-normal sm:font-medium">
-          <p> {products.name} </p>
+          <p>{products.name} </p>
           <div className=" flex gap-3">
             <span className=" text-sm text-lightGray line-through ">
-              ${products.oldPrice}
+              {products.currencySymbol}{products.oldPrice}
             </span>
-            <b className=" text-zinc-900 "> ${products.price} </b>
+            <b className=" text-zinc-900 ">{products.currencySymbol}{products.price} </b>
           </div>
         </nav>
 
@@ -83,12 +84,12 @@ const Products = ({ products, gap }: ProductsProps) => {
                 saveToLocalS(products);
                 setUpdate((p) => !p);
               }}
-              className={`h-6 stroke-lightGray hover:stroke-love self-start 
+              className={`h-6 stroke-light-gray hover:stroke-love self-start 
           sm:hover:fill-love transition-colors cursor-pointer
           duration-1000 text-lightDim1 z-10 ${
             window.localStorage.trxfav &&
             JSON.parse(localStorage.trxfav).filter(
-              (each: ProductsTypes) => each._id == products._id
+              (each: ProductsTypes | ProductWithCurrency) => each._id == products._id
             ).length >= 1 &&
             "fill-love stroke-love"
           }`}
