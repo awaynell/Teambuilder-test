@@ -40,8 +40,6 @@ const formatPrices = (
 // will be better to add a caches for the rates and using something like tanstack/react-query
 export async function convert(amount: number, from: string = 'USD', to: string = 'JPY'): Promise<string> {
   try {
-    console.log(`https://api.frankfurter.dev/v1/latest?amount=${amount}&base=${from}&symbols=${to}`);
-    
     const response = await fetch(`https://api.frankfurter.dev/v1/latest?amount=${amount}&base=${from}&symbols=${to}`);
     const data = await response.json();
 
